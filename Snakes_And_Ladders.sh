@@ -1,8 +1,9 @@
-#!/bin/bash -x
+#!/bin/bash
 
 echo "Welcome to Snakes And Ladders"
 
 START_POSITION=0
+declare -A diceDictionary
 
 function checkOptions()
 {
@@ -12,6 +13,9 @@ function checkOptions()
 	snake=3
 	while [ $playerPosition -lt 100 ]
 	do
+		(( diceRollCount++ ))
+		diceDictionary[ $diceRollCount ]=$playerPosition
+
 		dieValue=$(( RANDOM%6 + 1 ))
 		option=$(( RANDOM%3 + 1 ))
 		case $option in
@@ -35,11 +39,14 @@ function checkOptions()
 			fi
 			;;
 		esac
-	done
 	echo "dice value" $dieValue
+	echo "player option" $option
 	echo "playerPosition " $playerPosition
+	echo "------------------------------------------------------------"
+	done
 	echo "Won the game"
+	echo "Dice total rolls : $diceRollCount"
+	echo "${diceDictionary[@]}"
 }
 checkOptions
-
 
