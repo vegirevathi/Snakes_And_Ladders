@@ -3,8 +3,6 @@
 echo "Welcome to Snakes And Ladders"
 
 START_POSITION=0
-dieValue=$(( RANDOM%6 + 1 ))
-echo $dieValue
 
 function checkOptions()
 {
@@ -12,15 +10,21 @@ function checkOptions()
 	noPlay=1
 	ladder=2
 	snake=3
-	while [ $playerPosition -le 100 ]
+	while [ $playerPosition -lt 100 ]
 	do
+		dieValue=$(( RANDOM%6 + 1 ))
 		option=$(( RANDOM%3 + 1 ))
 		case $option in
 		$noPlay)
 			playerPosition=$playerPosition
 			;;
 		$ladder)
-			playerPosition=$(( $playerPosition + $dieValue ))
+			if [ $(( $playerPosition + $dieValue )) -gt 100 ]
+			then
+				playerPosition=$playerPosition
+			else
+				playerPosition=$(( $playerPosition + $dieValue ))
+			fi
 			;;
 		$snake)
 			if [ $(( $playerPosition - $dieValue)) -le $START_POSITION ]
@@ -32,7 +36,9 @@ function checkOptions()
 			;;
 		esac
 	done
+	echo "dice value" $dieValue
 	echo "playerPosition " $playerPosition
+	echo "Won the game"
 }
 checkOptions
 
