@@ -3,50 +3,66 @@
 echo "Welcome to Snakes And Ladders"
 
 START_POSITION=0
-declare -A diceDictionary
+WINNING_POSITION=100
 
 function checkOptions()
 {
-	playerPosition=$START_POSITION	
-	noPlay=1
-	ladder=2
-	snake=3
-	while [ $playerPosition -lt 100 ]
-	do
-		(( diceRollCount++ ))
-		diceDictionary[ $diceRollCount ]=$playerPosition
-
-		dieValue=$(( RANDOM%6 + 1 ))
-		option=$(( RANDOM%3 + 1 ))
-		case $option in
-		$noPlay)
-			playerPosition=$playerPosition
-			;;
-		$ladder)
-			if [ $(( $playerPosition + $dieValue )) -gt 100 ]
-			then
-				playerPosition=$playerPosition
-			else
-				playerPosition=$(( $playerPosition + $dieValue ))
-			fi
-			;;
-		$snake)
-			if [ $(( $playerPosition - $dieValue)) -le $START_POSITION ]
-      	then
-         	playerPosition=$START_POSITION
-			else
-				playerPosition=$(( $playerPosition - $dieValue ))
-			fi
-			;;
-		esac
-	echo "dice value" $dieValue
-	echo "player option" $option
-	echo "playerPosition " $playerPosition
-	echo "------------------------------------------------------------"
-	done
-	echo "Won the game"
-	echo "Dice total rolls : $diceRollCount"
-	echo "${diceDictionary[@]}"
+   playerPosition=$1
+   noPlay=1
+   ladder=2
+   snake=3
+   dieValue=$(( ($RANDOM%6)+1 ))
+   option=$(( ($RANDOM%3) + 1 ))
+   case $option in
+   $noPlay)
+      playerPosition=$playerPosition
+      ;;
+   $ladder)
+      if [ $(( $playerPosition + $dieValue )) -gt $WINNING_POSITION ]
+      then
+         playerPosition=$playerPosition
+      else
+         playerPosition=$(( $playerPosition + $dieValue ))
+      fi
+      ;;
+   $snake)
+      if [ $(( $playerPosition - $dieValue)) -lt $START_POSITION ]
+      then
+         playerPosition=$START_POSITION
+      else
+         playerPosition=$(( $playerPosition - $dieValue ))
+      fi
+      ;;
+   esac
+   echo $playerPosition
 }
-checkOptions
 
+function twoPlayers()
+{
+   playerOnePosition=$START_POSITION
+   playerTwoPosition=$START_POSITION
+
+   while [ $playerOnePosition -lt $WINNING_POSITION ] && [ $playerTwoPosition -lt $WINNING_POSITION ]
+   do
+      playerOnePosition=$(checkOptions $playerOnePosition)
+      echo "Player One Position > " $playerOnePosition
+
+      if [ $playerOnePosition -eq $WINNING_POSITION ]
+      then
+         echo "Player One Won The Game"
+         break
+      fi
+
+      playerTwoPosition=$(checkOptions $playerTwoPosition)
+      echo "Player Two Positon > " $playerTwoPosition
+      echo "------------------------------------------------------------"
+
+      if [ $playerTwoPosition -eq $WINNING_POSITION ]
+      then
+         echo "Player Two Won The Game"
+      fi
+      (( diceRolled++ ))
+   done
+}
+twoPlayers
+echo "Number of times dice rolled" $diceRolled
