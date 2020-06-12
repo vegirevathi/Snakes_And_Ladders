@@ -5,7 +5,7 @@ echo "Welcome to Snakes And Ladders"
 START_POSITION=0
 WINNING_POSITION=100
 
-function checkOptions()
+function playerOptions()
 {
    playerPosition=$1
    noPlay=1
@@ -44,7 +44,7 @@ function twoPlayers()
 
    while [ $playerOnePosition -lt $WINNING_POSITION ] && [ $playerTwoPosition -lt $WINNING_POSITION ]
    do
-      playerOnePosition=$(checkOptions $playerOnePosition)
+      playerOnePosition=$(playerOptions $playerOnePosition)
       echo "Player One Position > " $playerOnePosition
 
       if [ $playerOnePosition -eq $WINNING_POSITION ]
@@ -53,7 +53,7 @@ function twoPlayers()
          break
       fi
 
-      playerTwoPosition=$(checkOptions $playerTwoPosition)
+      playerTwoPosition=$(playerOptions $playerTwoPosition)
       echo "Player Two Positon > " $playerTwoPosition
       echo "------------------------------------------------------------"
 
